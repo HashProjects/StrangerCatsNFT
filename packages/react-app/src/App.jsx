@@ -71,7 +71,7 @@ const NETWORKCHECK = true;
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
   description: "It's actually a bison?",
-  external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
   image: "https://austingriffith.com/images/paintings/buffalo.jpg",
   name: "Buffalo",
   attributes: [
@@ -519,12 +519,14 @@ function App() {
   const [count, setCount] = useState(1);
 
   // the json for the nfts
+
+  //https://unsplash.com/images/animals/cat
   const json = {
     1: {
-      description: "It's actually a bison?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-      name: "Buffalo",
+      description: "What is up there?",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1615796153287-98eacf0abb13?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
+      name: "Up Cat",
       attributes: [
         {
           trait_type: "BackgroundColor",
@@ -542,9 +544,9 @@ function App() {
     },
     2: {
       description: "What is it so worried about?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/zebra.jpg",
-      name: "Zebra",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1611915387288-fd8d2f5f928b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1760&q=80",
+      name: "Zoom Cat",
       attributes: [
         {
           trait_type: "BackgroundColor",
@@ -561,10 +563,10 @@ function App() {
       ],
     },
     3: {
-      description: "What a horn!",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/rhino.jpg",
-      name: "Rhino",
+      description: "Youthfulness!",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1597626133663-53df9633b799?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1760&q=80",
+      name: "Little Cat",
       attributes: [
         {
           trait_type: "BackgroundColor",
@@ -581,10 +583,10 @@ function App() {
       ],
     },
     4: {
-      description: "Is that an underbyte?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/fish.jpg",
-      name: "Fish",
+      description: "What is for dinner?",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1606491048802-8342506d6471?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1333&q=80",
+      name: "Wishful",
       attributes: [
         {
           trait_type: "BackgroundColor",
@@ -602,9 +604,9 @@ function App() {
     },
     5: {
       description: "So delicate.",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/flamingo.jpg",
-      name: "Flamingo",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1577349516274-37ff88a53627?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1335&q=80",
+      name: "Donut",
       attributes: [
         {
           trait_type: "BackgroundColor",
@@ -622,8 +624,8 @@ function App() {
     },
     6: {
       description: "Raaaar!",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/godzilla.jpg",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1594142404563-64cccaf5a10f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
       name: "Godzilla",
       attributes: [
         {
