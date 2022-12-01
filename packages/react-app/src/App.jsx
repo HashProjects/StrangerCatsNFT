@@ -14,7 +14,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import Fortmatic from "fortmatic";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Component, useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 //import Torus from "@toruslabs/torus-embed"
@@ -25,6 +25,7 @@ import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ram
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
+import AboutTheTeam from "./components/AboutTheTeam";
 
 const projectId = "2GajDLTC6y04qsYsoDRq9nGmWwK";
 const projectSecret = "48c62c6b3f82d2ecfa2cbe4c90f97037";
@@ -728,12 +729,12 @@ function App() {
               Debug Contracts
             </Link>
           </Menu.Item>
-          <Menu.Item key="/About">
+          <Menu.Item key="/AboutTheTeam">
             <Link
               onClick={() => {
-                setRoute("/About");
+                setRoute("/AboutTheTeam");
               }}
-              to="/About"
+              to="/AboutTheTeam"
             >
               About the Team
             </Link>
@@ -910,64 +911,8 @@ function App() {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/About">
-<h2 style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 16 }}>Our Team</h2>
-<div className="row">
-  <div className="column">
-    <div class="card">
-    <img src="https://placekitten.com/200/300" alt="Jane" style={{width: 100}}/>
-      <div className="container">
-        <h2>Eric Britten</h2>
-        <p className="title">CEO & Founder</p>
-        <p>Favorite Cats are Siamese cat</p>
-        <p>jane@example.com</p>
-        <p><button className="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
-
-
-  <div className="column">
-    <div className="card">
-      
-      <div className="container">
-      <img src="https://placekitten.com/201/300" alt="Jane" style={{width: 100}}/>
-        <h2>Rosa Cho</h2>
-        <p className="title">Programer</p>
-        <p>Favorite Cats are Persian Cat</p>
-        <p>mike@example.com</p>
-        <p><button className="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
-
-  <div className="column">
-    <div className="card">
-      
-      <div className="container">
-      <img src="https://placekitten.com/202/300" alt="Jane" style={{width: 100}}/>
-        <h2>Timothy Jan</h2>
-        <p className="title">Programer</p>
-        <p>Favorite Cats are Scottish Fold</p>
-        <p>john@example.com</p>
-        <p><button className="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
-  <div className="column">
-    <div className="card">
-      
-      <div className="container">
-      <img src="https://placekitten.com/203/300" alt="Jane" style={{width: 100}}/>
-        <h2>Danny Tzoc</h2>
-        <p className="title">Designer</p>
-        <p>Favorite Cats are Sphynx cat</p>
-        <p>mike@example.com</p>
-        <p><button className="button">Contact</button></p>
-      </div>
-    </div>
-  </div>
-</div>
+          <Route path="/AboutTheTeam">
+            <AboutTheTeam></AboutTheTeam>
           </Route>
         </Switch>
       </BrowserRouter>
