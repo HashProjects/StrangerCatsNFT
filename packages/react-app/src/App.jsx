@@ -301,8 +301,8 @@ function App() {
           console.log("tokenURI", tokenURI);
           const level = await readContracts.StrangerCats.getLevel(tokenId);
           console.log("level", level);
-          const favorite = await readContracts.StrangerCats.getName(tokenId);
-          console.log("favorite", favorite);
+          const status = await readContracts.StrangerCats.getStatus(tokenId);
+          console.log("status", status);
 
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -313,7 +313,7 @@ function App() {
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, level: level, favorite: favorite, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, level: level, status: status, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -324,7 +324,7 @@ function App() {
       setYourCollectibles(collectibleUpdate);
     };
     updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, yourBalance, yourLocalBalance, yourMainnetBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -716,9 +716,28 @@ function App() {
     },);
   }
 
+  const setFree = (id) => {
+    console.log("writeContracts", writeContracts);
+    tx(writeContracts.StrangerCats.burn(id), update => {
+      console.log("📡 SetFree:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    },);
+  }
+
   const setCatStatus = (id) => {
     console.log("writeContracts", writeContracts);
-    tx(writeContracts.StrangerCats.changeName(id, status), update => {
+    tx(writeContracts.StrangerCats.changeStatus(id, status), update => {
       console.log("📡 Set Status:", update);
       if (update && (update.status === "confirmed" || update.status === 1)) {
         console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -842,10 +861,10 @@ const handleChange =  function(e) {
                         </div>
                         <div>{item.description}</div>
                         <div>
-                          <span style={{ fontSize: 12, marginRight: 8 }}>Lives: { item.level.toString() }</span>
+                          <span style={{ fontSize: 14, marginRight: 8 }}>Lives: { item.level.toString() }</span>
                         </div>
                         <div>
-                          <span style={{ fontSize: 12, marginRight: 8 }}>Status: { item.favorite }</span>
+                          <span style={{ fontSize: 14, marginRight: 8 }}>Status: { item.status }</span>
                         </div>
                       </Card>
 
@@ -875,25 +894,34 @@ const handleChange =  function(e) {
                         >
                           Transfer
                         </Button>
-                        <Button
-                          onClick={() => { levelUp(id); }}
-                        >
-                          Level Up Lives
-                        </Button>
                         <div>
-                        <label htmlFor="name">Status</label>
-                        <input
-                          id="status"
-                          name="status"
-                          type="text"
-                          value={status}
-                          onChange={handleChange}
-                        />
-                        <Button
-                          onClick={() => { setCatStatus(id); }}
-                        >
-                          Set Status
-                        </Button>
+                          <Button
+                            onClick={() => { levelUp(id); }}
+                          >
+                            Level Up Lives
+                          </Button>
+                        </div>
+                        <div>
+                          <label htmlFor="name">Status</label>
+                          <input
+                            id="status"
+                            name="status"
+                            type="text"
+                            value={status}
+                            onChange={handleChange}
+                          />
+                          <Button
+                            onClick={() => { setCatStatus(id); }}
+                          >
+                            Set Status
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            onClick={() => { setFree(id); }}
+                          >
+                            Set this Cat Free
+                          </Button>
                         </div>
                       </div>
                     </List.Item>

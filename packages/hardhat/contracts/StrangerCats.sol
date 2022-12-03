@@ -22,9 +22,11 @@ contract StrangerCats is
     constructor() ERC721("StrangerCats", "STCT") {}
 
     struct CatAttributes {
-        string name;
+        string status;
         uint32 level;
     }
+
+    event CatAttributeEvent(uint tokenId);
 
     mapping (uint => CatAttributes) public catAttributes;
 
@@ -32,8 +34,8 @@ contract StrangerCats is
         return catAttributes[tokenId].level;
     }
 
-    function getName(uint tokenId) public view returns (string memory) {
-        return catAttributes[tokenId].name;
+    function getStatus(uint tokenId) public view returns (string memory) {
+        return catAttributes[tokenId].status;
     }
 
     modifier aboveLevel(uint _level, uint tokenId) {
@@ -55,16 +57,16 @@ contract StrangerCats is
         catAttributes[_tokenId].level = catAttributes[_tokenId].level + 1;
     }
 
-    function changeName(uint _tokenId, string memory _newName) external aboveLevel(2, _tokenId) onlyOwnerOf(_tokenId) {
-        catAttributes[_tokenId].name = _newName;
+    function changeStatus(uint _tokenId, string memory _newStatus) external aboveLevel(2, _tokenId) onlyOwnerOf(_tokenId) {
+        catAttributes[_tokenId].status = _newStatus;
     }
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
     }
 
-    function _setNameAndLevel(uint tokenId, string memory name, uint32 level) private {
-        catAttributes[tokenId] = CatAttributes(name, level);
+    function _setStatusAndLevel(uint tokenId, string memory status, uint32 level) private {
+        catAttributes[tokenId] = CatAttributes(status, level);
     }
 
     function mintItem(address to, string memory uri) public returns (uint256) {
@@ -72,7 +74,7 @@ contract StrangerCats is
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        _setNameAndLevel(tokenId, "no name", 1);
+        _setStatusAndLevel(tokenId, "Happy!", 1);
         return tokenId;
     }
 
@@ -91,6 +93,10 @@ contract StrangerCats is
         override(ERC721, ERC721URIStorage)
     {
         super._burn(tokenId);
+    }
+
+    function burn(uint256 tokenId) public onlyOwnerOf(tokenId) {
+        _burn(tokenId);
     }
 
     function tokenURI(uint256 tokenId)
