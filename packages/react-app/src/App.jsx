@@ -523,7 +523,7 @@ function App() {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
-  const [status] = useState("");
+  const [status, setStatus] = useState("");
 
   // the json for the nfts
 
@@ -716,7 +716,7 @@ function App() {
     },);
   }
 
-  const setStatus = (id) => {
+  const setCatStatus = (id) => {
     console.log("writeContracts", writeContracts);
     tx(writeContracts.StrangerCats.changeName(id, status), update => {
       console.log("📡 Set Status:", update);
@@ -734,6 +734,10 @@ function App() {
       }
     },);
   }
+
+const handleChange =  function(e) {
+  setStatus(e.target.value);
+}
 
 
   return (
@@ -883,9 +887,10 @@ function App() {
                           name="status"
                           type="text"
                           value={status}
+                          onChange={handleChange}
                         />
                         <Button
-                          onClick={() => { setStatus(id); }}
+                          onClick={() => { setCatStatus(id); }}
                         >
                           Set Status
                         </Button>
