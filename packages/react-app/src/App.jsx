@@ -26,6 +26,7 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
 import AboutTheTeam from "./components/AboutTheTeam";
+import Guide from "./components/Guide";
 
 const projectId = "2GajDLTC6y04qsYsoDRq9nGmWwK";
 const projectSecret = "48c62c6b3f82d2ecfa2cbe4c90f97037";
@@ -679,6 +680,16 @@ function App() {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+          <Menu.Item key="/Guide">
+            <Link
+              onClick={() => {
+                setRoute("/Guide");
+              }}
+              to="/Guide"
+            >
+              Guide
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -913,6 +924,9 @@ function App() {
           </Route>
           <Route path="/AboutTheTeam">
             <AboutTheTeam></AboutTheTeam>
+          </Route>
+          <Route path="/Guide">
+            <Guide></Guide>
           </Route>
         </Switch>
       </BrowserRouter>
