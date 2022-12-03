@@ -26,13 +26,14 @@ Danny Tzoc
 
 Improvements:
 <ul>
-  <li>About Page</li>
-  <li>How to use website page</li>
-  <li>NFT's new images when minted</li>
-  <li>Updated UI</li>
-  <li>NFT's update name</li>
-  <li>NFT's update lives/levels</li>
-  <li>ERC20 Token</li>
+  <li>[X] About Page</li>
+  <li>[ ] How to use website page</li>
+  <li>[X] NFT's new images when minted</li>
+  <li>[ ] Updated UI</li>
+  <li>[X] NFT's update name</li>
+  <li>[X] NFT's update lives/levels</li>
+  <li>[X] NFT's Burn Function</li>
+  <li>[ ] ERC20 Token</li>
 </ul>
 
 Other items of interest:
