@@ -30,7 +30,7 @@ const main = async () => {
   console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
 
   const { deployer } = await getNamedAccounts();
-  const yourCollectible = await ethers.getContract("YourCollectible", deployer);
+  const yourCollectible = await ethers.getContract("StrangerCats", deployer);
 
   const buffalo = {
     description: "It's actually a bison?",
@@ -153,7 +153,7 @@ const main = async () => {
   await sleep(delayMS);
 
   console.log(
-    "Transferring Ownership of YourCollectible to " + toAddress + "..."
+    "Transferring Ownership of StrangerCats to " + toAddress + "..."
   );
 
   await yourCollectible.transferOwnership(toAddress, { gasLimit: 400000 });

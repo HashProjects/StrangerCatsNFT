@@ -96,9 +96,9 @@ yarn deploy
 
 > Can you mint an NFT with no funds in this address?  You might need to grab funds from the faucet to pay the gas!
 
-🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `YourCollectible`?
+🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `StrangerCats`?
 
-🔏 You can also check out your smart contract `YourCollectible.sol` in `packages/hardhat/contracts`.
+🔏 You can also check out your smart contract `StrangerCats.sol` in `packages/hardhat/contracts`.
 
 💼 Take a quick look at your deploy script `00_deploy_your_contract.js` in `packages/hardhat/deploy`.
 

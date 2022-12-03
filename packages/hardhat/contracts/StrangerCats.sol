@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract YourCollectible is
+contract StrangerCats is
     ERC721,
     ERC721Enumerable,
     ERC721URIStorage,
@@ -17,10 +17,54 @@ contract YourCollectible is
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("YourCollectible", "YCB") {}
+    uint levelUpFee = 0.001 ether;
+
+    constructor() ERC721("StrangerCats", "STCT") {}
+
+    struct CatAttributes {
+        string name;
+        uint32 level;
+    }
+
+    mapping (uint => CatAttributes) public catAttributes;
+
+    function getLevel(uint tokenId) public view returns (uint) {
+        return catAttributes[tokenId].level;
+    }
+
+    function getName(uint tokenId) public view returns (string memory) {
+        return catAttributes[tokenId].name;
+    }
+
+    modifier aboveLevel(uint _level, uint tokenId) {
+        require(catAttributes[tokenId].level >= _level);
+        _;
+    }
+
+    modifier onlyOwnerOf(uint _tokenId) {
+        require(msg.sender == ownerOf(_tokenId));
+        _;
+    }
+
+    function setLevelUpFee(uint _fee) external onlyOwner {
+        levelUpFee = _fee;
+    }
+
+    function levelUp(uint _tokenId) external {
+        require(catAttributes[_tokenId].level < 9);
+        catAttributes[_tokenId].level = catAttributes[_tokenId].level + 1;
+    }
+
+    function changeName(uint _tokenId, string memory _newName) external aboveLevel(2, _tokenId) onlyOwnerOf(_tokenId) {
+        catAttributes[_tokenId].name = _newName;
+    }
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
+    }
+
+    function _setNameAndLevel(uint tokenId, string memory name, uint32 level) private {
+        catAttributes[tokenId] = CatAttributes(name, level);
     }
 
     function mintItem(address to, string memory uri) public returns (uint256) {
@@ -28,6 +72,7 @@ contract YourCollectible is
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
+        _setNameAndLevel(tokenId, "no name", 1);
         return tokenId;
     }
 

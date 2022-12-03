@@ -276,11 +276,11 @@ function App() {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "StrangerCats", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "StrangerCats", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
@@ -295,10 +295,15 @@ function App() {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.StrangerCats.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.StrangerCats.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
+          const level = await readContracts.StrangerCats.getLevel(tokenId);
+          console.log("level", level);
+          const favorite = await readContracts.StrangerCats.getName(tokenId);
+          console.log("favorite", favorite);
+
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
@@ -308,7 +313,7 @@ function App() {
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, level: level, favorite: favorite, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -518,6 +523,7 @@ function App() {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
+  const [status] = useState("");
 
   // the json for the nfts
 
@@ -652,8 +658,8 @@ function App() {
     console.log("Uploaded Hash: ", uploaded);
     const result = tx(
       writeContracts &&
-        writeContracts.YourCollectible &&
-        writeContracts.YourCollectible.mintItem(address, uploaded.path),
+        writeContracts.StrangerCats &&
+        writeContracts.StrangerCats.mintItem(address, uploaded.path),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -773,6 +779,12 @@ function App() {
                           <img src={item.image} style={{ maxWidth: 150 }} />
                         </div>
                         <div>{item.description}</div>
+                        <div>
+                          <span style={{ fontSize: 12, marginRight: 8 }}>Lives: { item.level.toString() }</span>
+                        </div>
+                        <div>
+                          <span style={{ fontSize: 12, marginRight: 8 }}>Status: { item.favorite }</span>
+                        </div>
                       </Card>
 
                       <div>
@@ -796,11 +808,64 @@ function App() {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.StrangerCats.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
                         </Button>
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.StrangerCats.levelUp(id), update => {
+                              console.log("📡 Level Up:", update);
+                              if (update && (update.status === "confirmed" || update.status === 1)) {
+                                console.log(" 🍾 Transaction " + update.hash + " finished!");
+                                console.log(
+                                  " ⛽️ " +
+                                  update.gasUsed +
+                                  "/" +
+                                  (update.gasLimit || update.gas) +
+                                  " @ " +
+                                  parseFloat(update.gasPrice) / 1000000000 +
+                                  " gwei",
+                                );
+                              }
+                            },);
+                          }}
+                        >
+                          Level Up Lives
+                        </Button>
+                        <div>
+                        <label htmlFor="name">Status</label>
+                        <input
+                          id="status"
+                          name="status"
+                          type="text"
+                          value={status}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.StrangerCats.changeName(id, status), update => {
+                              console.log("📡 Set Status:", update);
+                              if (update && (update.status === "confirmed" || update.status === 1)) {
+                                console.log(" 🍾 Transaction " + update.hash + " finished!");
+                                console.log(
+                                  " ⛽️ " +
+                                  update.gasUsed +
+                                  "/" +
+                                  (update.gasLimit || update.gas) +
+                                  " @ " +
+                                  parseFloat(update.gasPrice) / 1000000000 +
+                                  " gwei",
+                                );
+                              }
+                            },);
+                          }}
+                        >
+                          Set Status
+                        </Button>
+                        </div>
                       </div>
                     </List.Item>
                   );
@@ -903,7 +968,7 @@ function App() {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="StrangerCats"
               signer={userSigner}
               provider={localProvider}
               address={address}
