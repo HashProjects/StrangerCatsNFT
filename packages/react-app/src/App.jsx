@@ -71,18 +71,18 @@ const NETWORKCHECK = true;
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
-  description: "It's actually a bison?",
+  description: "What is on your mind?",
   external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
-  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  name: "Buffalo",
+  image: "https://images.unsplash.com/photo-1549545931-59bf067af9ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1315&q=80",
+  name: "Corner",
   attributes: [
     {
-      trait_type: "BackgroundColor",
-      value: "green",
+      trait_type: "Location",
+      value: "Inside",
     },
     {
       trait_type: "Eyes",
-      value: "googly",
+      value: "Brown",
     },
   ],
 };
@@ -536,15 +536,15 @@ function App() {
       name: "Up Cat",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "green",
+          trait_type: "Location",
+          value: "Outside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Unknown",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 42,
         },
       ],
@@ -556,12 +556,12 @@ function App() {
       name: "Zoom Cat",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "blue",
+          trait_type: "Location",
+          value: "Unknown",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Orange",
         },
         {
           trait_type: "Stamina",
@@ -584,7 +584,7 @@ function App() {
           value: "googly",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 22,
         },
       ],
@@ -596,15 +596,15 @@ function App() {
       name: "Wishful",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "blue",
+          trait_type: "Location",
+          value: "Inside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Green",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 15,
         },
       ],
@@ -616,16 +616,16 @@ function App() {
       name: "Donut",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "black",
+          trait_type: "Location",
+          value: "Inside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Orange",
         },
         {
-          trait_type: "Stamina",
-          value: 6,
+          trait_type: "Curiosity",
+          value: 76,
         },
       ],
     },
@@ -636,16 +636,36 @@ function App() {
       name: "Godzilla",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "orange",
+          trait_type: "Location",
+          value: "Inside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Orange",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 99,
+        },
+      ],
+    },
+    7: {
+      description: "Zzzzzzz!",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1335&q=80",
+      name: "Sally",
+      attributes: [
+        {
+          trait_type: "Location",
+          value: "Inside",
+        },
+        {
+          trait_type: "Eyes",
+          value: "Unknown",
+        },
+        {
+          trait_type: "Curiosity",
+          value: 0,
         },
       ],
     },
@@ -677,6 +697,44 @@ function App() {
       },
     );
   };
+  const levelUp = (id) => {
+    console.log("writeContracts", writeContracts);
+    tx(writeContracts.StrangerCats.levelUp(id), update => {
+      console.log("📡 Level Up:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    },);
+  }
+
+  const setStatus = (id) => {
+    console.log("writeContracts", writeContracts);
+    tx(writeContracts.StrangerCats.changeName(id, status), update => {
+      console.log("📡 Set Status:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    },);
+  }
+
 
   return (
     <div className="App">
@@ -814,24 +872,7 @@ function App() {
                           Transfer
                         </Button>
                         <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.StrangerCats.levelUp(id), update => {
-                              console.log("📡 Level Up:", update);
-                              if (update && (update.status === "confirmed" || update.status === 1)) {
-                                console.log(" 🍾 Transaction " + update.hash + " finished!");
-                                console.log(
-                                  " ⛽️ " +
-                                  update.gasUsed +
-                                  "/" +
-                                  (update.gasLimit || update.gas) +
-                                  " @ " +
-                                  parseFloat(update.gasPrice) / 1000000000 +
-                                  " gwei",
-                                );
-                              }
-                            },);
-                          }}
+                          onClick={() => { levelUp(id); }}
                         >
                           Level Up Lives
                         </Button>
@@ -844,24 +885,7 @@ function App() {
                           value={status}
                         />
                         <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.StrangerCats.changeName(id, status), update => {
-                              console.log("📡 Set Status:", update);
-                              if (update && (update.status === "confirmed" || update.status === 1)) {
-                                console.log(" 🍾 Transaction " + update.hash + " finished!");
-                                console.log(
-                                  " ⛽️ " +
-                                  update.gasUsed +
-                                  "/" +
-                                  (update.gasLimit || update.gas) +
-                                  " @ " +
-                                  parseFloat(update.gasPrice) / 1000000000 +
-                                  " gwei",
-                                );
-                              }
-                            },);
-                          }}
+                          onClick={() => { setStatus(id); }}
                         >
                           Set Status
                         </Button>
