@@ -524,6 +524,9 @@ function App() {
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
   const [status, setStatus] = useState("");
+  const [catDesc, setCatDesc] = useState("")
+  const [catName, setCatName] = useState("")
+  const [catUrl, setCatUrl] = useState("")
 
   // the json for the nfts
 
@@ -697,6 +700,54 @@ function App() {
       },
     );
   };
+
+  const mintCustomItem = async (image, name, description) => {
+    // upload to ipfs
+    const imageInfo = {
+      description: description,
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: image,
+      name: name,
+      attributes: [
+        {
+          trait_type: "Location",
+          value: "Unknown",
+        },
+        {
+          trait_type: "Eyes",
+          value: "Unknown",
+        },
+        {
+          trait_type: "Curiosity",
+          value: 76,
+        },
+      ],
+    };
+    const uploaded = await ipfs.add(JSON.stringify(imageInfo));
+    setCount(count + 1);
+    console.log("Uploaded Hash: ", uploaded);
+    const result = tx(
+      writeContracts &&
+      writeContracts.StrangerCats &&
+      writeContracts.StrangerCats.mintItem(address, uploaded.path),
+      update => {
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          console.log(" 🍾 Transaction " + update.hash + " finished!");
+          console.log(
+            " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+          );
+        }
+      },
+    );
+  };
+
   const levelUp = (id) => {
     console.log("writeContracts", writeContracts);
     tx(writeContracts.StrangerCats.levelUp(id), update => {
@@ -754,9 +805,18 @@ function App() {
     },);
   }
 
-const handleChange =  function(e) {
-  setStatus(e.target.value);
-}
+  const handleChange =  function(e) {
+    setStatus(e.target.value);
+  }
+  const handleChangeCatName =  function(e) {
+    setCatName(e.target.value);
+  }
+  const handleChangeCatUrl =  function(e) {
+    setCatUrl(e.target.value);
+  }
+  const handleChangeCatDesc =  function(e) {
+    setCatDesc(e.target.value);
+  }
 
 
   return (
@@ -838,7 +898,43 @@ const handleChange =  function(e) {
                   mintItem();
                 }}
               >
-                MINT NFT
+                MINT STRANGE CAT
+              </Button>
+            </div>
+            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <div>Url:<input
+                id="catUrl"
+                name="catUrl"
+                type="text"
+                value={catUrl}
+                onChange={handleChangeCatUrl}
+                size="50"
+              />
+                <a href="https://unsplash.com/images/animals/cat" target="_cats">Find Cat Images</a>
+              </div>
+              <div>Name:<input
+                id="catName"
+                name="catName"
+                type="text"
+                value={catName}
+                onChange={handleChangeCatName}
+              /></div>
+              <div>Description:<input
+                id="catDesc"
+                name="catDesc"
+                type="text"
+                value={catDesc}
+                onChange={handleChangeCatDesc}
+              /></div>
+              <Button
+                disabled={minting}
+                shape="round"
+                size="large"
+                onClick={() => {
+                  mintCustomItem(catUrl, catName, catDesc);
+                }}
+              >
+                MINT STRANGER CAT
               </Button>
             </div>
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
