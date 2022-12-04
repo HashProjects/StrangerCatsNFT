@@ -27,8 +27,9 @@ Danny Tzoc
 Improvements:
 <ul>
   <li>[X] About Page</li>
-  <li>[ ] How to use website page</li>
+  <li>[X] How to use website page</li>
   <li>[X] NFT's new images when minted</li>
+  <li>[X] NFT's custom images when minted</li>
   <li>[ ] Updated UI</li>
   <li>[X] NFT's update name</li>
   <li>[X] NFT's update lives/levels</li>
