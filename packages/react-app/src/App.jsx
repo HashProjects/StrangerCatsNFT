@@ -914,7 +914,7 @@ function App() {
             </div>
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <div>Url:<input
-                id="catUrl"
+                id="catUrl"  class="field"
                 name="catUrl"
                 type="text"
                 value={catUrl}

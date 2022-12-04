@@ -90,3 +90,31 @@ img {
     display: block;
   }
 }
+
+#status {
+  border-radius: 4px;
+  position: relative;
+  border-width: 1px;
+  transition: 0.3s all;
+}
+
+#catName {
+  border-radius: 4px;
+  position: relative;
+  border-width: 1px;
+  transition: 0.3s all;
+}
+
+#catUrl {
+  border-radius: 4px;
+  position: relative;
+  border-width: 1px;
+  transition: 0.3s all;
+}
+
+#catDesc {
+  border-radius: 4px;
+  position: relative;
+  border-width: 1px;
+  transition: 0.3s all;
+}
