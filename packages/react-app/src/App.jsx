@@ -72,18 +72,18 @@ const NETWORKCHECK = true;
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
-  description: "It's actually a bison?",
+  description: "What is on your mind?",
   external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
-  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  name: "Buffalo",
+  image: "https://images.unsplash.com/photo-1549545931-59bf067af9ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1315&q=80",
+  name: "Corner",
   attributes: [
     {
-      trait_type: "BackgroundColor",
-      value: "green",
+      trait_type: "Location",
+      value: "Inside",
     },
     {
       trait_type: "Eyes",
-      value: "googly",
+      value: "Brown",
     },
   ],
 };
@@ -277,11 +277,11 @@ function App() {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "StrangerCats", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "StrangerCats", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
@@ -296,10 +296,15 @@ function App() {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.StrangerCats.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.StrangerCats.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
+          const level = await readContracts.StrangerCats.getLevel(tokenId);
+          console.log("level", level);
+          const status = await readContracts.StrangerCats.getStatus(tokenId);
+          console.log("status", status);
+
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
@@ -309,7 +314,7 @@ function App() {
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, level: level, status: status, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -320,7 +325,7 @@ function App() {
       setYourCollectibles(collectibleUpdate);
     };
     updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, yourBalance, yourLocalBalance, yourMainnetBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -519,6 +524,10 @@ function App() {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
+  const [status, setStatus] = useState("");
+  const [catDesc, setCatDesc] = useState("")
+  const [catName, setCatName] = useState("")
+  const [catUrl, setCatUrl] = useState("")
 
   // the json for the nfts
 
@@ -531,15 +540,15 @@ function App() {
       name: "Up Cat",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "green",
+          trait_type: "Location",
+          value: "Outside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Unknown",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 42,
         },
       ],
@@ -551,12 +560,12 @@ function App() {
       name: "Zoom Cat",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "blue",
+          trait_type: "Location",
+          value: "Unknown",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Orange",
         },
         {
           trait_type: "Stamina",
@@ -579,7 +588,7 @@ function App() {
           value: "googly",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 22,
         },
       ],
@@ -591,15 +600,15 @@ function App() {
       name: "Wishful",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "blue",
+          trait_type: "Location",
+          value: "Inside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Green",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 15,
         },
       ],
@@ -611,16 +620,16 @@ function App() {
       name: "Donut",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "black",
+          trait_type: "Location",
+          value: "Inside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Orange",
         },
         {
-          trait_type: "Stamina",
-          value: 6,
+          trait_type: "Curiosity",
+          value: 76,
         },
       ],
     },
@@ -631,16 +640,36 @@ function App() {
       name: "Godzilla",
       attributes: [
         {
-          trait_type: "BackgroundColor",
-          value: "orange",
+          trait_type: "Location",
+          value: "Inside",
         },
         {
           trait_type: "Eyes",
-          value: "googly",
+          value: "Orange",
         },
         {
-          trait_type: "Stamina",
+          trait_type: "Curiosity",
           value: 99,
+        },
+      ],
+    },
+    7: {
+      description: "Zzzzzzz!",
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: "https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1335&q=80",
+      name: "Sally",
+      attributes: [
+        {
+          trait_type: "Location",
+          value: "Inside",
+        },
+        {
+          trait_type: "Eyes",
+          value: "Unknown",
+        },
+        {
+          trait_type: "Curiosity",
+          value: 0,
         },
       ],
     },
@@ -653,8 +682,8 @@ function App() {
     console.log("Uploaded Hash: ", uploaded);
     const result = tx(
       writeContracts &&
-        writeContracts.YourCollectible &&
-        writeContracts.YourCollectible.mintItem(address, uploaded.path),
+        writeContracts.StrangerCats &&
+        writeContracts.StrangerCats.mintItem(address, uploaded.path),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -672,6 +701,124 @@ function App() {
       },
     );
   };
+
+  const mintCustomItem = async (image, name, description) => {
+    // upload to ipfs
+    const imageInfo = {
+      description: description,
+      external_url: "https://unsplash.com/images/animals/cat", // <-- this can link to a page for the specific file too
+      image: image,
+      name: name,
+      attributes: [
+        {
+          trait_type: "Location",
+          value: "Unknown",
+        },
+        {
+          trait_type: "Eyes",
+          value: "Unknown",
+        },
+        {
+          trait_type: "Curiosity",
+          value: 76,
+        },
+      ],
+    };
+    const uploaded = await ipfs.add(JSON.stringify(imageInfo));
+    setCount(count + 1);
+    console.log("Uploaded Hash: ", uploaded);
+    const result = tx(
+      writeContracts &&
+      writeContracts.StrangerCats &&
+      writeContracts.StrangerCats.mintItem(address, uploaded.path),
+      update => {
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          console.log(" 🍾 Transaction " + update.hash + " finished!");
+          console.log(
+            " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+          );
+        }
+      },
+    );
+  };
+
+  const levelUp = (id) => {
+    console.log("writeContracts", writeContracts);
+    tx(writeContracts.StrangerCats.levelUp(id), update => {
+      console.log("📡 Level Up:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    },);
+  }
+
+  const setFree = (id) => {
+    console.log("writeContracts", writeContracts);
+    tx(writeContracts.StrangerCats.burn(id), update => {
+      console.log("📡 SetFree:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    },);
+  }
+
+  const setCatStatus = (id) => {
+    console.log("writeContracts", writeContracts);
+    tx(writeContracts.StrangerCats.changeStatus(id, status), update => {
+      console.log("📡 Set Status:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    },);
+  }
+
+  const handleChange =  function(e) {
+    setStatus(e.target.value);
+  }
+  const handleChangeCatName =  function(e) {
+    setCatName(e.target.value);
+  }
+  const handleChangeCatUrl =  function(e) {
+    setCatUrl(e.target.value);
+  }
+  const handleChangeCatDesc =  function(e) {
+    setCatDesc(e.target.value);
+  }
+
 
   return (
     <div className="App">
@@ -762,7 +909,43 @@ function App() {
                   mintItem();
                 }}
               >
-                MINT NFT
+                MINT STRANGE CAT
+              </Button>
+            </div>
+            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <div>Url:<input
+                id="catUrl"
+                name="catUrl"
+                type="text"
+                value={catUrl}
+                onChange={handleChangeCatUrl}
+                size="50"
+              />
+                <a href="https://unsplash.com/images/animals/cat" target="_cats">Find Cat Images</a>
+              </div>
+              <div>Name:<input
+                id="catName"
+                name="catName"
+                type="text"
+                value={catName}
+                onChange={handleChangeCatName}
+              /></div>
+              <div>Description:<input
+                id="catDesc"
+                name="catDesc"
+                type="text"
+                value={catDesc}
+                onChange={handleChangeCatDesc}
+              /></div>
+              <Button
+                disabled={minting}
+                shape="round"
+                size="large"
+                onClick={() => {
+                  mintCustomItem(catUrl, catName, catDesc);
+                }}
+              >
+                MINT STRANGER CAT
               </Button>
             </div>
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
@@ -784,6 +967,12 @@ function App() {
                           <img src={item.image} style={{ maxWidth: 150 }} />
                         </div>
                         <div>{item.description}</div>
+                        <div>
+                          <span style={{ fontSize: 14, marginRight: 8 }}>Lives: { item.level.toString() }</span>
+                        </div>
+                        <div>
+                          <span style={{ fontSize: 14, marginRight: 8 }}>Status: { item.status }</span>
+                        </div>
                       </Card>
 
                       <div>
@@ -807,11 +996,40 @@ function App() {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.StrangerCats.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
                         </Button>
+                        <div>
+                          <Button
+                            onClick={() => { levelUp(id); }}
+                          >
+                            Level Up Lives
+                          </Button>
+                        </div>
+                        <div>
+                          <label htmlFor="name">Status</label>
+                          <input
+                            id="status"
+                            name="status"
+                            type="text"
+                            value={status}
+                            onChange={handleChange}
+                          />
+                          <Button
+                            onClick={() => { setCatStatus(id); }}
+                          >
+                            Set Status
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            onClick={() => { setFree(id); }}
+                          >
+                            Set this Cat Free
+                          </Button>
+                        </div>
                       </div>
                     </List.Item>
                   );
@@ -914,7 +1132,7 @@ function App() {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="StrangerCats"
               signer={userSigner}
               provider={localProvider}
               address={address}
