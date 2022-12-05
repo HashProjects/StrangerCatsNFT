@@ -30,11 +30,10 @@ Improvements:
   <li>[X] How to use website page</li>
   <li>[X] NFT's new images when minted</li>
   <li>[X] NFT's custom images when minted</li>
-  <li>[ ] Updated UI</li>
+  <li>[X] Updated UI</li> 
   <li>[X] NFT's update name</li>
   <li>[X] NFT's update lives/levels</li>
   <li>[X] NFT's Burn Function</li>
-  <li>[ ] ERC20 Token</li>
 </ul>
 
 Other items of interest:
